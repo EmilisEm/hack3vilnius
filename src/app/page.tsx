@@ -17,17 +17,17 @@ export default function Home() {
         }
     }))
 
-    return (
-        <QueryClientProvider client={queryClient}>
-            <ErrorBoundary errorComponent={ErrorPage}>
-                <div className="flex flex-col h-screen">
-                    <Header />
-                    <div className="flex-1 overflow-hidden">
-                        <HomePage />
-                        <DataDisplay />
-                    </div>
-                </div>
-            </ErrorBoundary>
-        </QueryClientProvider>
-    );
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary errorComponent={ErrorPage}>
+        <div className="flex flex-col h-screen">
+          <DataDisplay />
+          <Header />
+          <div className="flex-1 overflow-hidden">
+            <HomePage />
+          </div>
+        </div>
+      </ErrorBoundary>
+    </QueryClientProvider>
+  );
 }
