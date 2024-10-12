@@ -3,8 +3,14 @@ import { AppContext } from './context'
 
 const AppContextProvider = ({ children }: { children: ReactNode }) => {
     const [junctionCoordinates, setJunctionCoordinates] = useState<
-        [number, number] | null
-    >(null)
+        [number, number][]
+    >([
+        [25.261673, 54.731551],
+        [25.261712, 54.732388],
+        [25.265382, 54.732177],
+        [25.266687, 54.729014],
+        [25.266959, 54.728904],
+    ])
     return (
         <AppContext.Provider
             value={{ junctionCoordinates, setJunctionCoordinates }}

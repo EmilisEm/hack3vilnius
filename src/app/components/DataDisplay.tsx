@@ -6,7 +6,6 @@ import LoadingPage from '../../page/LoadingPage'
 import { getLuciferQuote } from '@/api/lucifer/getSpells'
 
 const DataDisplay = () => {
-    console.log(allSpells)
     const { data, isLoading } = useQuery({
         queryKey: [allSpells],
         queryFn: getLuciferQuote,

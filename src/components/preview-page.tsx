@@ -1,23 +1,25 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import dynamic from 'next/dynamic'
+import { AppContext } from '@/context/context'
+import { useQueries } from '@tanstack/react-query'
+import { junctionById } from '@/api/utils/queryKeyFactory'
+import { getStreetImageUrl } from '@/api/mapillary/getImage'
+import LoadingPage from '@/page/LoadingPage'
+import ErrorPage from '@/page/ErrorPage'
+
+const getOffsetCoordinates = (long: number, lat: number) => {
+    return [long - 0.001, lat - 0.001, long + 0.001, lat + 0.001]
+}
 
 export default function PreviewPage() {
-    const imageLoader = ({
-        width,
-        quality,
-    }: {
-        width: number
-        quality?: number
-    }) => {
-        return `https://placeholder.co/${width}x${width}?q=${quality || 75}`
-    }
-
+    const { junctionCoordinates } = useContext(AppContext)
+    const [currentJunctionIndex, setCurrentJunctionIndex] = useState(0)
     const Map = useMemo(
         () =>
             dynamic(() => import('@/components/map/'), {
@@ -26,6 +28,41 @@ export default function PreviewPage() {
             }),
         []
     )
+    const allUrls = useQueries({
+        queries:
+            junctionCoordinates?.map((it) => {
+                const [smallLong, smallLat, bigLong, bigLat] =
+                    getOffsetCoordinates(it[0], it[1])
+
+                return {
+                    queryKey: [
+                        junctionById(smallLong, smallLat, bigLong, bigLat),
+                    ],
+                    queryFn: async () =>
+                        await getStreetImageUrl(
+                            smallLong,
+                            smallLat,
+                            bigLong,
+                            bigLat
+                        ),
+                }
+            }) ?? [],
+    })
+    const nextJunction = () => {
+        if (currentJunctionIndex + 1 >= allUrls.length) {
+            setCurrentJunctionIndex(0)
+        }
+
+        setCurrentJunctionIndex((it) => it + 1)
+    }
+
+    if (allUrls.some((it) => it.isLoading)) {
+        return <LoadingPage />
+    }
+
+    if (allUrls.some((it) => it.isError)) {
+        return <ErrorPage />
+    }
 
     return (
         <div className="flex flex-col h-full bg-background">
@@ -41,8 +78,8 @@ export default function PreviewPage() {
             <main className="flex-1 overflow-hidden flex flex-col">
                 <div className="relative w-full flex-1 border-b-4 ">
                     <Image
-                        loader={imageLoader}
-                        src="placeholder"
+                        loader={({ src }) => src}
+                        src={`${allUrls[currentJunctionIndex].data}`}
                         alt="Intersection of Main Street and Broadway"
                         layout="fill"
                         objectFit="cover"
@@ -59,8 +96,13 @@ export default function PreviewPage() {
             </main>
 
             <div className="px-4 py-2 grid grid-cols-2 gap-4 bg-background">
-                <Button variant="outline" className="w-full">
-                    Next Intersection(1/n)
+                <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={nextJunction}
+                >
+                    Next Intersection({currentJunctionIndex + 1}/
+                    {allUrls.length})
                 </Button>
                 <Button className="w-full">Navigate</Button>
             </div>
