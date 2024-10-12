@@ -8,7 +8,10 @@ export function getMultiLaneStreetIntersections(data: RouteData) {
         const multiLaneStreetIntersections: [number, number][] = []
         steps.forEach((step: Step) => {
             step.intersections.forEach((intersection: Intersection) => {
-                if (intersection.classes && intersection.classes.includes('multiLaneStreet')) {
+                if (
+                    intersection.classes &&
+                    intersection.classes.includes('multiLaneStreet')
+                ) {
                     multiLaneStreetIntersections.push(intersection.location)
                 }
             })
