@@ -8,7 +8,7 @@ export const getRoute = async (
     maxLat: number
 ) => {
     const pathResponse = await axios.get(
-        `https://jorislisas.com/osrm/route/v1/bike/${minLong},${minLat};${maxLong},${maxLat}?steps=true&geometries=geojson&annotations=true&continue_straight=true`
+        `https://jorislisas.com/osrm/route/v1/bike/${minLong},${minLat};${maxLong},${maxLat}?steps=true&geometries=geojson&annotations=true`
     )
 
     const parsedData = pathResponse.data as RouteData

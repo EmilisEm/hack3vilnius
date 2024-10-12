@@ -1,22 +1,20 @@
 import { Intersection, RouteData, Step } from './types/osrmResponse'
 
-export function getIntersections(data: RouteData) {
+export function getMultiLaneStreetIntersections(data: RouteData) {
     if (data && data.routes && data.routes.length > 0) {
         const steps = data.routes[0].legs[0].steps
 
-        // Extract intersection coordinates
-        const intersections: [number, number][] = []
+        // Extract intersections that cross multiLaneStreet
+        const multiLaneStreetIntersections: [number, number][] = []
         steps.forEach((step: Step) => {
             step.intersections.forEach((intersection: Intersection) => {
-                let entryTrueCount = 0
-                intersection.entry.forEach((e) => (entryTrueCount += e ? 1 : 0))
-                if (entryTrueCount >= 3) {
-                    intersections.push(intersection.location)
+                if (intersection.classes && intersection.classes.includes('multiLaneStreet')) {
+                    multiLaneStreetIntersections.push(intersection.location)
                 }
             })
         })
 
-        return intersections
+        return multiLaneStreetIntersections
     }
 
     return null
