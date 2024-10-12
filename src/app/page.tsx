@@ -1,5 +1,7 @@
 'use client'
 
+import { Header } from "../components/header";
+import HomePage from "../components/home-page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import DataDisplay from "./components/DataDisplay";
@@ -14,12 +16,18 @@ export default function Home() {
   }}))
 
   return (
-        <QueryClientProvider client={queryClient}>
-          <ErrorBoundary errorComponent={ErrorPage}>
-          <div>
-            <DataDisplay />
-          </div>
-          </ErrorBoundary>
-        </QueryClientProvider>
+    <div className="flex flex-col h-screen">
+      <Header />
+      <div className="flex-1 overflow-hidden">
+        <HomePage />
+      </div>
+    </div>
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary errorComponent={ErrorPage}>
+        <div>
+          <DataDisplay />
+        </div>
+      </ErrorBoundary>
+    </QueryClientProvider>
   );
 }
