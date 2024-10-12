@@ -21,6 +21,7 @@ export default function Home() {
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary errorComponent={ErrorPage}>
         <div className="flex flex-col h-screen">
+          <DataDisplay />
           <Header />
           <div className="flex-1 overflow-hidden">
             <HomePage />
