@@ -7,6 +7,6 @@ export interface imageUrlResponse {
 }
 
 export interface imageDataResponse {
-    id: string,
+    id: string
     thumb_2048_url: string
 }
