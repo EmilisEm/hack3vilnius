@@ -4,8 +4,8 @@ export interface osrmResponse {
 }
 
 export interface Coordinates {
-    lat: number;
-    lon: number;
+    lat: number
+    lon: number
 }
 
 export type RouteData = {
