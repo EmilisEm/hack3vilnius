@@ -135,7 +135,7 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                <div className="flex-1 p-4 pb-1">
+                <div className="flex-1 w-full py-2">
                     <div className="bg-muted w-full h-full flex items-center justify-center">
                         {/* TODO: get user's location */}
                         <Map posix={[54.72976354954342, 25.263490737244734]} />
