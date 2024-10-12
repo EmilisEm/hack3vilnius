@@ -3,22 +3,23 @@
 import React, { useMemo } from 'react'
 import Image from 'next/image'
 import { MapPin } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import dynamic from "next/dynamic";
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import dynamic from 'next/dynamic'
 
 export default function PreviewPage() {
     const imageLoader = ({ src, width, quality }) => {
         return `https://placeholder.co/${width}x${width}?q=${quality || 75}`
     }
 
-    const Map = useMemo(() => dynamic(
-        () => import('@/components/map/'),
-        {
-            loading: () => <p>A map is loading</p>,
-            ssr: false
-        }
-    ), [])
+    const Map = useMemo(
+        () =>
+            dynamic(() => import('@/components/map/'), {
+                loading: () => <p>A map is loading</p>,
+                ssr: false,
+            }),
+        []
+    )
 
     return (
         <div className="flex flex-col h-full bg-background">
@@ -55,9 +56,7 @@ export default function PreviewPage() {
                 <Button variant="outline" className="w-full">
                     Next Intersection(1/n)
                 </Button>
-                <Button className="w-full">
-                    Navigate
-                </Button>
+                <Button className="w-full">Navigate</Button>
             </div>
         </div>
     )
