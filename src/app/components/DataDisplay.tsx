@@ -2,7 +2,7 @@
 import { allSpells } from '@/api/utils/queryKeyFactory'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import LoadingPage from '../pages/LoadingPage'
+import LoadingPage from '../../page/LoadingPage'
 import { getLuciferQuote } from '@/api/lucifer/getSpells'
 
 const DataDisplay = () => {
