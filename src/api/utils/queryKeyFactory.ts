@@ -1,15 +1,15 @@
 export const allSpells = 'lucifer'
 
 export const junctionById = (
-    minLat: number,
     minLong: number,
-    maxLat: number,
-    maxLong: number
+    minLat: number,
+    maxLong: number,
+    maxLat: number
 ) => `junction-photo-${minLat}-${minLong}-${maxLat}-${maxLong}`
 
 export const navigationByCoord = (
-    minLat: number,
     minLong: number,
-    maxLat: number,
-    maxLong: number
+    minLat: number,
+    maxLong: number,
+    maxLat: number
 ) => `navigation-${minLat}-${minLong}-${maxLat}-${maxLong}`
