@@ -9,13 +9,13 @@ import ErrorPage from "../page/ErrorPage";
 import DataDisplay from "@/components/DataDisplay";
 
 export default function Home() {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000,
-      }
-    }
-  }))
+    const [queryClient] = useState(() => new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: 60 * 1000,
+            }
+        }
+    }))
 
   return (
     <QueryClientProvider client={queryClient}>
