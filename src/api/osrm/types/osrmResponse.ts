@@ -1,3 +1,8 @@
+export interface osrmResponse {
+    coordinates: [[number, number]]
+    type: 'LineString'
+}
+
 export type RouteData = {
   code: string;
   routes: Route[];
