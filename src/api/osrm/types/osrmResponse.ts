@@ -3,6 +3,11 @@ export interface osrmResponse {
     type: 'LineString'
 }
 
+export interface Coordinates {
+    lat: number;
+    lon: number;
+}
+
 export type RouteData = {
     code: string
     routes: Route[]
