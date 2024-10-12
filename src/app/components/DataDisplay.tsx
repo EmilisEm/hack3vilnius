@@ -7,16 +7,16 @@ import { getLuciferQuote } from '@/api/lucifer/getSpells';
 
 const DataDisplay = () => {
     console.log(allSpells)
-  const {data, isLoading} = useQuery({queryKey: [allSpells], queryFn: getLuciferQuote });
-  if (isLoading) {
-    <LoadingPage />
-  }
+    const { data, isLoading } = useQuery({ queryKey: [allSpells], queryFn: getLuciferQuote });
+    if (isLoading) {
+        <LoadingPage />
+    }
 
-  return (
-    <div>
-        {`${data}`}
-    </div>
-  )
+    return (
+        <div>
+            {`${data}`}
+        </div>
+    )
 }
 
 export default DataDisplay
