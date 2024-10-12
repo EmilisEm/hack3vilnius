@@ -9,24 +9,25 @@ import ErrorPage from "../page/ErrorPage";
 import DataDisplay from "@/components/DataDisplay";
 
 export default function Home() {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000,
-      }
-    }
-  }))
+    const [queryClient] = useState(() => new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: 60 * 1000,
+            }
+        }
+    }))
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ErrorBoundary errorComponent={ErrorPage}>
-        <div className="flex flex-col h-screen">
-          <Header />
-          <div className="flex-1 overflow-hidden">
-            <HomePage />
-          </div>
-        </div>
-      </ErrorBoundary>
-    </QueryClientProvider>
-  );
+    return (
+        <QueryClientProvider client={queryClient}>
+            <ErrorBoundary errorComponent={ErrorPage}>
+                <div className="flex flex-col h-screen">
+                    <Header />
+                    <div className="flex-1 overflow-hidden">
+                        <HomePage />
+                        <DataDisplay />
+                    </div>
+                </div>
+            </ErrorBoundary>
+        </QueryClientProvider>
+    );
 }
