@@ -1,11 +1,15 @@
+'use client'
+
+import { Header } from "../components/header";
+import HomePage from "../components/home-page";
+
 export default function Home() {
   return (
-    <section>
-      <center>
-        <h1>
-          Hello from bikgud
-        </h1>
-      </center>
-    </section>
+    <div className="flex flex-col h-screen">
+      <Header />
+      <div className="flex-1 overflow-hidden">
+        <HomePage />
+      </div>
+    </div>
   );
 }
