@@ -50,7 +50,7 @@ export default function PreviewPage() {
     })
     const nextJunction = () => {
         if (currentJunctionIndex + 1 >= allUrls.length) {
-            setCurrentJunctionIndex(0);
+            setCurrentJunctionIndex(0)
         } else {
             setCurrentJunctionIndex((it) => it + 1)
         }
