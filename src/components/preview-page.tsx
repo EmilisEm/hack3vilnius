@@ -8,7 +8,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import dynamic from 'next/dynamic'
 
 export default function PreviewPage() {
-    const imageLoader = ({ width, quality }) => {
+    const imageLoader = ({
+        width,
+        quality,
+    }: {
+        width: number
+        quality?: number
+    }) => {
         return `https://placeholder.co/${width}x${width}?q=${quality || 75}`
     }
 
