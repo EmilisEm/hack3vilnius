@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import ErrorPage from '../page/ErrorPage'
-import DataDisplay from '@/components/DataDisplay'
+import AppContextProvider from '@/context/ContextProvider'
 
 export default function Home() {
     const [queryClient] = useState(
@@ -21,6 +21,7 @@ export default function Home() {
     )
 
     return (
+      <AppContextProvider>
         <QueryClientProvider client={queryClient}>
             <ErrorBoundary errorComponent={ErrorPage}>
                 <div className="flex flex-col h-screen">
@@ -31,5 +32,6 @@ export default function Home() {
                 </div>
             </ErrorBoundary>
         </QueryClientProvider>
+      </AppContextProvider>
     )
 }

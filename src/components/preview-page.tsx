@@ -8,10 +8,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import dynamic from "next/dynamic";
 
 export default function PreviewPage() {
-    const imageLoader = ({ src, width, quality }) => {
-        return `https://placeholder.co/${width}x${width}?q=${quality || 75}`
-    }
-
     const Map = useMemo(() => dynamic(
         () => import('@/components/map/'),
         {
