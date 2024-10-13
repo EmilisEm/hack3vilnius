@@ -9,6 +9,8 @@ import { getRoute } from '@/api/osrm/getRoute'
 import { LineString } from 'geojson'
 import { Coordinates } from '@/api/osrm/types/osrmResponse'
 import Link from 'next/link'
+import { Bike } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function HomePage() {
     // Fixed stops: Start and End
@@ -183,7 +185,6 @@ export default function HomePage() {
         <div className="flex flex-col h-full bg-background relative">
             <main className="flex-1 overflow-hidden flex flex-col relative">
                 <div className="border rounded-lg p-4 m-4 space-y-4">
-                    <ScrollArea className="h-[15vh] border rounded-md p-2 overflow-auto">
                         {stops.map((stop, index) => (
                             <div key={index} className="flex flex-col mb-4">
                                 <div className="flex items-center space-x-2">
@@ -223,11 +224,30 @@ export default function HomePage() {
                                 {/* Removed Coordinates Display */}
                             </div>
                         ))}
-                    </ScrollArea>
 
                     {/* Removed "Add Stop" Button and bikeType Select */}
-                </div>
 
+                        <div className="flex items-center space-x-2">
+                            <Bike className="w-5 h-5 text-primary" />
+                            <Select>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select bike type" />
+                                </SelectTrigger>
+                                <SelectContent className="z-20">
+                                    <SelectItem value="road">
+                                        Road Bike
+                                    </SelectItem>
+                                    <SelectItem value="mountain">
+                                        Mountain Bike
+                                    </SelectItem>
+                                    <SelectItem value="electric">
+                                        Electric Bike/Scooter
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                </div>
                 {/* Display Route Error */}
                 {routeError && (
                     <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white p-2 rounded shadow-lg z-50">
