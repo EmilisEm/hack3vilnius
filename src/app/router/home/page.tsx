@@ -179,18 +179,6 @@ export default function HomePage() {
         lon: 25.261934,
     } // Default to sample start
 
-    // Function to determine button content (optional if keeping the button)
-    const getButton = () => {
-        console.log(routeLoading, coordinates)
-        if (routeLoading) {
-            return <span>Fetching Route...</span>
-        } else if (!coordinates[0] || !coordinates[1]) {
-            return <span>Fetch route</span>
-        } else if (route) {
-            return <Link href="/router/preview">Preview route</Link>
-        }
-    }
-
     return (
         <div className="flex flex-col h-full bg-background relative">
             <main className="flex-1 overflow-hidden flex flex-col relative">
