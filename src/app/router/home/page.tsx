@@ -191,7 +191,14 @@ export default function HomePage() {
         if (areCoordinatesFetched && areInputsUnfocused) {
             fetchRoute()
         }
-    }, [coordinates, isStartFocused, isEndFocused, fetchRoute])
+    }, [
+        coordinates,
+        isStartFocused,
+        isEndFocused,
+        fetchRoute,
+        setJunctionCoordinates,
+        setRouteGlobal,
+    ])
 
     // Determine start coordinates for centering the map
     const startCoordinates = coordinates[0] || {
