@@ -27,7 +27,7 @@ import { getMultiLaneStreetIntersections } from '@/api/osrm/parseJunctions'
 
 export default function HomePage() {
     // Fixed stops: Start and End
-    const { setJunctionCoordinates } = useContext(AppContext)
+    const { setJunctionCoordinates, setRouteGlobal } = useContext(AppContext)
     const [stops, setStops] = useState<string[]>(['', ''])
     const [coordinates, setCoordinates] = useState<(Coordinates | null)[]>([
         null,
@@ -170,6 +170,7 @@ export default function HomePage() {
             const routeGeometry: LineString = routeData.routes[0]
                 .geometry as LineString
             setRoute(routeGeometry)
+            setRouteGlobal(routeData)
         } catch (error: unknown) {
             console.error(error)
             if (error instanceof Error) {
