@@ -10,8 +10,8 @@ import { AppContext } from '@/context/context'
 import { useQueries } from '@tanstack/react-query'
 import { junctionById } from '@/api/utils/queryKeyFactory'
 import { getStreetImageUrl } from '@/api/mapillary/getImage'
-import LoadingPage from '@/page/LoadingPage'
-import ErrorPage from '@/page/ErrorPage'
+import LoadingPage from '@/pages/LoadingPage'
+import ErrorPage from '@/pages/ErrorPage'
 
 const getOffsetCoordinates = (long: number, lat: number) => {
     return [long - 0.001, lat - 0.001, long + 0.001, lat + 0.001]

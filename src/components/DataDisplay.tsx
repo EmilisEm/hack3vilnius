@@ -1,7 +1,7 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import LoadingPage from '../page/LoadingPage'
+import LoadingPage from '../pages/LoadingPage'
 import { junctionById } from '@/api/utils/queryKeyFactory'
 import { getStreetImageUrl } from '@/api/mapillary/getImage'
 import { getRoute } from '@/api/osrm/getRoute'

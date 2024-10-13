@@ -13,8 +13,9 @@ import {
 } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
-export default function HomePage() {
+const HomePage = () => {
     const [stops, setStops] = useState(['', ''])
     const [filledStops, setFilledStops] = useState(0)
 
@@ -145,9 +146,11 @@ export default function HomePage() {
 
             <div className="px-4 pb-4 pt-1">
                 <Button className="w-full" size="lg" disabled={filledStops < 2}>
-                    Go
+                    <Link href="/router/preview">Go</Link>
                 </Button>
             </div>
         </div>
     )
 }
+
+export default HomePage
