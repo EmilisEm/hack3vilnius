@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 import { getRoute } from '@/api/osrm/getRoute'
 import { LineString } from 'geojson'
 import { Coordinates } from '@/api/osrm/types/osrmResponse'
+import Link from 'next/link'
 
 export default function HomePage() {
     // Fixed stops: Start and End
@@ -26,6 +27,10 @@ export default function HomePage() {
     const [route, setRoute] = useState<LineString | null>(null)
     const [routeLoading, setRouteLoading] = useState<boolean>(false)
     const [routeError, setRouteError] = useState<string | null>(null)
+
+    // Focus state variables
+    const [isStartFocused, setIsStartFocused] = useState<boolean>(false)
+    const [isEndFocused, setIsEndFocused] = useState<boolean>(false)
 
     // Dynamically import Map component
     const Map = useMemo(
@@ -109,7 +114,7 @@ export default function HomePage() {
     }
 
     // Function to fetch the route
-    const fetchRoute = async () => {
+    const fetchRoute = useCallback(async () => {
         if (!coordinates[0] || !coordinates[1]) {
             setRouteError('Start and End coordinates are required.')
             return
@@ -156,7 +161,17 @@ export default function HomePage() {
         } finally {
             setRouteLoading(false)
         }
-    }
+    }, [coordinates])
+
+    // useEffect to automatically fetch route when both coordinates are fetched and inputs are unfocused
+    useEffect(() => {
+        const areCoordinatesFetched = coordinates[0] && coordinates[1]
+        const areInputsUnfocused = !isStartFocused && !isEndFocused
+
+        if (areCoordinatesFetched && areInputsUnfocused) {
+            fetchRoute()
+        }
+    }, [coordinates, isStartFocused, isEndFocused, fetchRoute])
 
     // Determine start coordinates for centering the map
     const startCoordinates = coordinates[0] || {
@@ -186,7 +201,15 @@ export default function HomePage() {
                                                     e.target.value
                                                 )
                                             }
+                                            onFocus={() => {
+                                                if (index === 0)
+                                                    setIsStartFocused(true)
+                                                else setIsEndFocused(true)
+                                            }}
                                             onBlur={() => {
+                                                if (index === 0)
+                                                    setIsStartFocused(false)
+                                                else setIsEndFocused(false)
                                                 if (stop.trim() !== '') {
                                                     fetchCoordinates(
                                                         stop,
@@ -203,24 +226,6 @@ export default function HomePage() {
                     </ScrollArea>
 
                     {/* Removed "Add Stop" Button and bikeType Select */}
-                </div>
-
-                {/* "Go" Button */}
-                <div className="px-4 pb-4 pt-1">
-                    <Button
-                        className="w-full"
-                        size="lg"
-                        disabled={
-                            !stops[0].trim() ||
-                            !stops[1].trim() ||
-                            loadingStates.some((loading) => loading) ||
-                            errors.some((error) => error !== null) ||
-                            routeLoading
-                        }
-                        onClick={fetchRoute}
-                    >
-                        {routeLoading ? 'Fetching Route...' : 'Go'}
-                    </Button>
                 </div>
 
                 {/* Display Route Error */}
@@ -243,6 +248,24 @@ export default function HomePage() {
                         <p>No route to display.</p>
                     )}
                 </div>
+            </div>
+
+            {/* Optional: Remove or Retain the "Go" Button */}
+            {/* If you choose to retain it, adjust its disabled state and content accordingly */}
+            <div className="px-4 pb-4 pt-1">
+                <Button
+                    className="w-full"
+                    size="lg"
+                    disabled={
+                        !stops[0].trim() ||
+                        !stops[1].trim() ||
+                        loadingStates.some((loading) => loading) ||
+                        errors.some((error) => error !== null) ||
+                        routeLoading
+                    }
+                >
+                    <Link href="/router/preview">Preview route</Link>
+                </Button>
             </div>
         </div>
     )
