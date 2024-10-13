@@ -12,6 +12,7 @@ import { junctionById } from '@/api/utils/queryKeyFactory'
 import { getStreetImageUrl } from '@/api/mapillary/getImage'
 import LoadingPage from '@/pages/LoadingPage'
 import ErrorPage from '@/pages/ErrorPage'
+import Link from 'next/link'
 
 const getOffsetCoordinates = (long: number, lat: number) => {
     return [long - 0.001, lat - 0.001, long + 0.001, lat + 0.001]
@@ -106,7 +107,10 @@ export default function PreviewPage() {
                 >
                     Next junction
                 </Button>
-                <Button className="w-full">Navigate</Button>
+
+                <Button className="w-full">
+                    <Link href="/router/navigate">Navigate</Link>
+                </Button>
             </div>
         </div>
     )
