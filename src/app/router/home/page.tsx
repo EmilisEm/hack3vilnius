@@ -1,19 +1,33 @@
 'use client'
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import React, {
+    useState,
+    useMemo,
+    useEffect,
+    useCallback,
+    useContext,
+} from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import dynamic from 'next/dynamic'
 import { getRoute } from '@/api/osrm/getRoute'
 import { LineString } from 'geojson'
 import { Coordinates } from '@/api/osrm/types/osrmResponse'
 import Link from 'next/link'
 import { Bike } from 'lucide-react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+import { AppContext } from '@/context/context'
+import { getMultiLaneStreetIntersections } from '@/api/osrm/parseJunctions'
 
 export default function HomePage() {
     // Fixed stops: Start and End
+    const { setJunctionCoordinates } = useContext(AppContext)
     const [stops, setStops] = useState<string[]>(['', ''])
     const [coordinates, setCoordinates] = useState<(Coordinates | null)[]>([
         null,
@@ -142,6 +156,9 @@ export default function HomePage() {
                 end.lat
             )
 
+            setJunctionCoordinates(
+                getMultiLaneStreetIntersections(routeData) || []
+            )
             // Debugging: Log the received routeData
             console.log('Received Route Data:', routeData)
 
@@ -185,68 +202,59 @@ export default function HomePage() {
         <div className="flex flex-col h-full bg-background relative">
             <main className="flex-1 overflow-hidden flex flex-col relative">
                 <div className="border rounded-lg p-4 m-4 space-y-4">
-                        {stops.map((stop, index) => (
-                            <div key={index} className="flex flex-col mb-4">
-                                <div className="flex items-center space-x-2">
-                                    {/* Removed MapPin icon */}
-                                    <div className="flex w-full items-center space-x-2">
-                                        <Input
-                                            className="flex-1"
-                                            placeholder={
-                                                index === 0 ? 'Start' : 'End'
+                    {stops.map((stop, index) => (
+                        <div key={index} className="flex flex-col mb-4">
+                            <div className="flex items-center space-x-2">
+                                {/* Removed MapPin icon */}
+                                <div className="flex w-full items-center space-x-2">
+                                    <Input
+                                        className="flex-1"
+                                        placeholder={
+                                            index === 0 ? 'Start' : 'End'
+                                        }
+                                        value={stop}
+                                        onChange={(e) =>
+                                            updateStop(index, e.target.value)
+                                        }
+                                        onFocus={() => {
+                                            if (index === 0)
+                                                setIsStartFocused(true)
+                                            else setIsEndFocused(true)
+                                        }}
+                                        onBlur={() => {
+                                            if (index === 0)
+                                                setIsStartFocused(false)
+                                            else setIsEndFocused(false)
+                                            if (stop.trim() !== '') {
+                                                fetchCoordinates(stop, index)
                                             }
-                                            value={stop}
-                                            onChange={(e) =>
-                                                updateStop(
-                                                    index,
-                                                    e.target.value
-                                                )
-                                            }
-                                            onFocus={() => {
-                                                if (index === 0)
-                                                    setIsStartFocused(true)
-                                                else setIsEndFocused(true)
-                                            }}
-                                            onBlur={() => {
-                                                if (index === 0)
-                                                    setIsStartFocused(false)
-                                                else setIsEndFocused(false)
-                                                if (stop.trim() !== '') {
-                                                    fetchCoordinates(
-                                                        stop,
-                                                        index
-                                                    )
-                                                }
-                                            }}
-                                        />
-                                    </div>
+                                        }}
+                                    />
                                 </div>
-                                {/* Removed Coordinates Display */}
                             </div>
-                        ))}
+                            {/* Removed Coordinates Display */}
+                        </div>
+                    ))}
 
                     {/* Removed "Add Stop" Button and bikeType Select */}
 
-                        <div className="flex items-center space-x-2">
-                            <Bike className="w-5 h-5 text-primary" />
-                            <Select>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select bike type" />
-                                </SelectTrigger>
-                                <SelectContent className="z-20">
-                                    <SelectItem value="road">
-                                        Road Bike
-                                    </SelectItem>
-                                    <SelectItem value="mountain">
-                                        Mountain Bike
-                                    </SelectItem>
-                                    <SelectItem value="electric">
-                                        Electric Bike/Scooter
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
+                    <div className="flex items-center space-x-2">
+                        <Bike className="w-5 h-5 text-primary" />
+                        <Select>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select bike type" />
+                            </SelectTrigger>
+                            <SelectContent className="z-20">
+                                <SelectItem value="road">Road Bike</SelectItem>
+                                <SelectItem value="mountain">
+                                    Mountain Bike
+                                </SelectItem>
+                                <SelectItem value="electric">
+                                    Electric Bike/Scooter
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
                 {/* Display Route Error */}
                 {routeError && (
