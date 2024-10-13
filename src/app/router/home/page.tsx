@@ -202,39 +202,47 @@ export default function HomePage() {
         <div className="flex flex-col h-full bg-background relative">
             <main className="flex-1 overflow-hidden flex flex-col relative">
                 <div className="border rounded-lg p-4 m-4 space-y-4">
-                    {stops.map((stop, index) => (
-                        <div key={index} className="flex flex-col mb-4">
-                            <div className="flex items-center space-x-2">
-                                {/* Removed MapPin icon */}
-                                <div className="flex w-full items-center space-x-2">
-                                    <Input
-                                        className="flex-1"
-                                        placeholder={
-                                            index === 0 ? 'Start' : 'End'
-                                        }
-                                        value={stop}
-                                        onChange={(e) =>
-                                            updateStop(index, e.target.value)
-                                        }
-                                        onFocus={() => {
-                                            if (index === 0)
-                                                setIsStartFocused(true)
-                                            else setIsEndFocused(true)
-                                        }}
-                                        onBlur={() => {
-                                            if (index === 0)
-                                                setIsStartFocused(false)
-                                            else setIsEndFocused(false)
-                                            if (stop.trim() !== '') {
-                                                fetchCoordinates(stop, index)
+                    <div className="mb-8">
+                        {stops.map((stop, index) => (
+                            <div key={index} className="flex flex-col mb-4">
+                                <div className="flex items-center space-x-2">
+                                    {/* Removed MapPin icon */}
+                                    <div className="flex w-full items-center space-x-2">
+                                        <Input
+                                            className="flex-1"
+                                            placeholder={
+                                                index === 0 ? 'Start' : 'End'
                                             }
-                                        }}
-                                    />
+                                            value={stop}
+                                            onChange={(e) =>
+                                                updateStop(
+                                                    index,
+                                                    e.target.value
+                                                )
+                                            }
+                                            onFocus={() => {
+                                                if (index === 0)
+                                                    setIsStartFocused(true)
+                                                else setIsEndFocused(true)
+                                            }}
+                                            onBlur={() => {
+                                                if (index === 0)
+                                                    setIsStartFocused(false)
+                                                else setIsEndFocused(false)
+                                                if (stop.trim() !== '') {
+                                                    fetchCoordinates(
+                                                        stop,
+                                                        index
+                                                    )
+                                                }
+                                            }}
+                                        />
+                                    </div>
                                 </div>
+                                {/* Removed Coordinates Display */}
                             </div>
-                            {/* Removed Coordinates Display */}
-                        </div>
-                    ))}
+                        ))}
+                    </div>
 
                     {/* Removed "Add Stop" Button and bikeType Select */}
 
