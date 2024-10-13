@@ -1,6 +1,7 @@
-import { ArrowLeft, MapPin, Clock, Link } from 'lucide-react'
+import { ArrowLeft, MapPin, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
 
 export default function AfterTripEnd() {
     return (
@@ -25,13 +26,13 @@ export default function AfterTripEnd() {
 
             <div className="flex space-x-4">
                 <Button variant="outline" className="flex-1">
-                    <Link href="/router/home">
+                    <Link href="/router/home" className="flex flex-row">
                         <ArrowLeft className="w-4 h-4 mr-2" />
-                        Go Back
+                        New trip
                     </Link>
                 </Button>
-                <Button variant="destructive" className="flex-1">
-                    <Link href="/router/report-problem">
+                <Button variant="destructive">
+                    <Link href="/router/report" className="flex flex-row">
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Report Problem
                     </Link>
