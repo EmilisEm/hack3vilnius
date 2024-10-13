@@ -212,7 +212,7 @@ export default function HomePage() {
                 id="shiza1"
                 className="overflow-hidden flex flex-col relative"
             >
-                <div id="shiza" className="border rounded-lg p-4 m-4">
+                <div id="shiza" className="border rounded-lg p-4 m-4 z-10">
                     <div className="mb-8">
                         {stops.map((stop, index) => (
                             <div key={index} className="flex flex-col mb-4">
@@ -257,7 +257,7 @@ export default function HomePage() {
 
                     {/* Removed "Add Stop" Button and bikeType Select */}
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 z-10">
                         <Bike className="w-5 h-5 text-primary" />
                         <Select>
                             <SelectTrigger className="w-full">
@@ -284,7 +284,7 @@ export default function HomePage() {
             </main>
 
             {/* Map Display */}
-            <div className="flex-1 w-full py-2">
+            <div className="flex-1 w-full py-2 z-0">
                 <div className="bg-muted w-full h-full flex items-center justify-center">
                     {route ? (
                         <Map
