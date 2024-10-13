@@ -6,7 +6,6 @@ import { useState } from 'react'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import ErrorPage from '../page/ErrorPage'
 import AppContextProvider from '@/context/ContextProvider'
-import DataDisplay from '@/components/DataDisplay'
 import PreviewPage from '@/components/preview-page'
 
 export default function Home() {
