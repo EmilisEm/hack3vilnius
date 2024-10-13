@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 import { AppContext } from './context'
-import { osrmResponse } from '@/api/osrm/types/osrmResponse'
+import { RouteData } from '@/api/osrm/types/osrmResponse'
 
 const AppContextProvider = ({ children }: { children: ReactNode }) => {
     const [junctionCoordinates, setJunctionCoordinates] = useState<
@@ -13,7 +13,7 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
         [25.266959, 54.728904],
     ])
 
-    const [globalRoute, setGlobalRoute] = useState<osrmResponse | null>(null)
+    const [globalRoute, setGlobalRoute] = useState<RouteData | null>(null)
     return (
         <AppContext.Provider
             value={{

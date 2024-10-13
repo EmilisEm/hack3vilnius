@@ -1,5 +1,5 @@
 'use client'
-import { osrmResponse, RouteData } from '@/api/osrm/types/osrmResponse'
+import { RouteData } from '@/api/osrm/types/osrmResponse'
 import { createContext, Dispatch, SetStateAction } from 'react'
 
 export interface AppContextType {
