@@ -1,14 +1,11 @@
 'use client'
+
 import { Header } from '@/components/header'
 import AppContextProvider from '@/context/ContextProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { useState } from 'react'
 
-export const RouteLayout = ({
-    children,
-}: Readonly<{
-    children: React.ReactNode
-}>) => {
+const RouteLayout = ({ children }: { children: React.ReactNode }) => {
     const [queryClient] = useState(
         () =>
             new QueryClient({
@@ -19,6 +16,7 @@ export const RouteLayout = ({
                 },
             })
     )
+
     return (
         <AppContextProvider>
             <QueryClientProvider client={queryClient}>
