@@ -70,12 +70,15 @@ export default function PreviewPage() {
                 <CardContent className="p-2">
                     <h2 className="text-2xl font-bold flex items-center">
                         <MapPin className="w-6 h-6 mr-2 text-primary" />
-                        <span>#1: Main Street & Broadway</span>
+                        <span>
+                            Junction {currentJunctionIndex + 1} out of{' '}
+                            {allUrls.length}
+                        </span>
                     </h2>
                 </CardContent>
             </Card>
 
-            <main className="flex-1 overflow-hidden flex flex-col">
+            <main className="flex-1 overflow-hidden flex flex-col mx-3">
                 <div className="relative w-full flex-1 border-b-4 ">
                     <Image
                         loader={({ src }) => src}
@@ -87,7 +90,7 @@ export default function PreviewPage() {
                     />
                 </div>
 
-                <div className="relative w-full flex-1">
+                <div className="relative w-full flex-1 ">
                     <div className="bg-muted w-full h-full flex items-center justify-center">
                         {/* TODO: get user's location */}
                         <Map posix={[54.72976354954342, 25.263490737244734]} />
@@ -101,8 +104,7 @@ export default function PreviewPage() {
                     className="w-full"
                     onClick={nextJunction}
                 >
-                    Next Intersection({currentJunctionIndex + 1}/
-                    {allUrls.length})
+                    Next junction
                 </Button>
                 <Button className="w-full">Navigate</Button>
             </div>

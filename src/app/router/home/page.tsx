@@ -201,8 +201,11 @@ export default function HomePage() {
 
     return (
         <div className="flex flex-col h-full bg-background relative">
-            <main className="flex-1 overflow-hidden flex flex-col relative">
-                <div className="border rounded-lg p-4 m-4 space-y-4">
+            <main
+                id="shiza1"
+                className="overflow-hidden flex flex-col relative"
+            >
+                <div id="shiza" className="border rounded-lg p-4 m-4">
                     <div className="mb-8">
                         {stops.map((stop, index) => (
                             <div key={index} className="flex flex-col mb-4">
