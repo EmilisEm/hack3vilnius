@@ -4,7 +4,7 @@ import AppContextProvider from '@/context/ContextProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React, { useState } from 'react'
 
-export const layout = ({
+export const Layout = ({
     children,
 }: Readonly<{
     children: React.ReactNode
@@ -31,4 +31,4 @@ export const layout = ({
     )
 }
 
-export default layout
+export default Layout
