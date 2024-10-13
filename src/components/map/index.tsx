@@ -1,38 +1,64 @@
-'use client'
-
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { LatLngExpression, LatLngTuple } from 'leaflet'
-
+import React, { useEffect } from 'react'
+import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
-import 'leaflet-defaulticon-compatibility'
+import L from 'leaflet'
+import { LineString } from 'geojson'
 
 interface MapProps {
-    posix: LatLngExpression | LatLngTuple
-    zoom?: number
+    posix: [number, number]
+    route?: LineString
 }
 
-const defaults = {
-    zoom: 19,
+const FitBounds: React.FC<{ route?: LineString }> = ({ route }) => {
+    const map = useMap()
+
+    useEffect(() => {
+        if (!map) return
+
+        if (route && route.coordinates.length > 0) {
+            const routeCoords: [number, number][] = route.coordinates.map(
+                (coord) => [coord[1], coord[0]]
+            )
+
+            // Create a LatLngBounds object from the route coordinates
+            const bounds = L.latLngBounds(routeCoords)
+
+            // Fit the map view to the bounds with padding
+            map.fitBounds(bounds, { padding: [50, 50] })
+        }
+    }, [map, route])
+
+    return null
 }
 
-const Map = (Map: MapProps) => {
-    const { zoom = defaults.zoom, posix } = Map
+const Map: React.FC<MapProps> = ({ posix, route }) => {
+    // Convert route coordinates from [lon, lat] to [lat, lon]
+    const routeCoordinates = route
+        ? route.coordinates.map(
+              (coord) => [coord[1], coord[0]] as [number, number]
+          )
+        : []
 
     return (
         <MapContainer
             center={posix}
-            zoom={zoom}
-            scrollWheelZoom={false}
-            style={{ zIndex: 1, height: '100%', width: '100%' }}
+            zoom={13}
+            style={{ height: '100%', width: '100%' }}
         >
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={posix} draggable={false}>
-                <Popup>Hey! I study here</Popup>
-            </Marker>
+            {route && (
+                <Polyline
+                    positions={routeCoordinates}
+                    color="blue"
+                    weight={4}
+                    opacity={0.7}
+                />
+            )}
+            {/* Fit the map bounds whenever the route changes */}
+            <FitBounds route={route} />
         </MapContainer>
     )
 }

@@ -1,6 +1,11 @@
 export interface osrmResponse {
-    coordinates: [[number, number]]
+    coordinates: [number, number][]
     type: 'LineString'
+}
+
+export interface Coordinates {
+    lat: number
+    lon: number
 }
 
 export type RouteData = {
@@ -15,7 +20,7 @@ export type Route = {
 
 export type Geometry = {
     coordinates: [number, number][]
-    type: string // should be "LineString"
+    type: 'LineString'
 }
 
 export type Leg = {
@@ -52,6 +57,7 @@ export type Intersection = {
     bearings: number[]
     location: [number, number] // [longitude, latitude]
     lanes?: Lane[]
+    classes?: string[] // e.g., ["multiLaneStreet"]
 }
 
 export type Lane = {
