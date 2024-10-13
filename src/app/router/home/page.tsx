@@ -1,32 +1,36 @@
-'use client'
+'use client';
 
-import React, { useState, useMemo } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import dynamic from 'next/dynamic'
-import { getRoute } from '@/api/osrm/getRoute'
-import { LineString } from 'geojson'
-import { Coordinates } from '@/api/osrm/types/osrmResponse'
-import Link from 'next/link'
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import dynamic from 'next/dynamic';
+import { getRoute } from '@/api/osrm/getRoute';
+import { LineString } from 'geojson';
+import { Coordinates } from '@/api/osrm/types/osrmResponse';
+import Link from 'next/link';
 
 export default function HomePage() {
     // Fixed stops: Start and End
-    const [stops, setStops] = useState<string[]>(['', ''])
+    const [stops, setStops] = useState<string[]>(['', '']);
     const [coordinates, setCoordinates] = useState<(Coordinates | null)[]>([
         null,
         null,
-    ])
+    ]);
     const [loadingStates, setLoadingStates] = useState<boolean[]>([
         false,
         false,
-    ])
-    const [errors, setErrors] = useState<(string | null)[]>([null, null])
+    ]);
+    const [errors, setErrors] = useState<(string | null)[]>([null, null]);
 
     // State variables for route
-    const [route, setRoute] = useState<LineString | null>(null)
-    const [routeLoading, setRouteLoading] = useState<boolean>(false)
-    const [routeError, setRouteError] = useState<string | null>(null)
+    const [route, setRoute] = useState<LineString | null>(null);
+    const [routeLoading, setRouteLoading] = useState<boolean>(false);
+    const [routeError, setRouteError] = useState<string | null>(null);
+
+    // Focus state variables
+    const [isStartFocused, setIsStartFocused] = useState<boolean>(false);
+    const [isEndFocused, setIsEndFocused] = useState<boolean>(false);
 
     // Dynamically import Map component
     const Map = useMemo(
@@ -36,25 +40,25 @@ export default function HomePage() {
                 ssr: false,
             }),
         []
-    )
+    );
 
     // Function to fetch coordinates for a single address
     const fetchCoordinates = async (
         address: string,
         index: number
     ): Promise<void> => {
-        const encodedAddress = encodeURIComponent(address)
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedAddress}&limit=1&addressdetails=1`
+        const encodedAddress = encodeURIComponent(address);
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedAddress}&limit=1&addressdetails=1`;
 
         // Update loading state
-        const newLoadingStates = [...loadingStates]
-        newLoadingStates[index] = true
-        setLoadingStates(newLoadingStates)
+        const newLoadingStates = [...loadingStates];
+        newLoadingStates[index] = true;
+        setLoadingStates(newLoadingStates);
 
         // Clear previous errors
-        const newErrors = [...errors]
-        newErrors[index] = null
-        setErrors(newErrors)
+        const newErrors = [...errors];
+        newErrors[index] = null;
+        setErrors(newErrors);
 
         try {
             const response = await fetch(url, {
@@ -62,71 +66,71 @@ export default function HomePage() {
                     'Accept-Language': 'en', // Optional: Specify language
                     'User-Agent': 'YourAppName/1.0 (your.email@example.com)', // **Important:** Replace with your app name and contact info
                 },
-            })
+            });
 
             if (!response.ok) {
-                throw new Error(`Error fetching data: ${response.statusText}`)
+                throw new Error(`Error fetching data: ${response.statusText}`);
             }
 
-            const data = await response.json()
+            const data = await response.json();
 
             if (data.length === 0) {
                 // No results found
-                const updatedCoordinates = [...coordinates]
-                updatedCoordinates[index] = null
-                setCoordinates(updatedCoordinates)
+                const updatedCoordinates = [...coordinates];
+                updatedCoordinates[index] = null;
+                setCoordinates(updatedCoordinates);
 
-                const updatedErrors = [...errors]
-                updatedErrors[index] = 'Coordinates not found.'
-                setErrors(updatedErrors)
+                const updatedErrors = [...errors];
+                updatedErrors[index] = 'Coordinates not found.';
+                setErrors(updatedErrors);
             } else {
                 const coord: Coordinates = {
                     lat: parseFloat(data[0].lat),
                     lon: parseFloat(data[0].lon),
-                }
+                };
 
-                const updatedCoordinates = [...coordinates]
-                updatedCoordinates[index] = coord
-                setCoordinates(updatedCoordinates)
+                const updatedCoordinates = [...coordinates];
+                updatedCoordinates[index] = coord;
+                setCoordinates(updatedCoordinates);
             }
         } catch (err) {
-            console.error(err)
-            const updatedErrors = [...errors]
-            updatedErrors[index] = 'Failed to fetch coordinates.'
-            setErrors(updatedErrors)
+            console.error(err);
+            const updatedErrors = [...errors];
+            updatedErrors[index] = 'Failed to fetch coordinates.';
+            setErrors(updatedErrors);
         } finally {
             // Update loading state
-            const updatedLoadingStates = [...loadingStates]
-            updatedLoadingStates[index] = false
-            setLoadingStates(updatedLoadingStates)
+            const updatedLoadingStates = [...loadingStates];
+            updatedLoadingStates[index] = false;
+            setLoadingStates(updatedLoadingStates);
         }
-    }
+    };
 
     // Function to update stop address
     const updateStop = (index: number, value: string) => {
-        const newStops = [...stops]
-        newStops[index] = value
-        setStops(newStops)
-    }
+        const newStops = [...stops];
+        newStops[index] = value;
+        setStops(newStops);
+    };
 
     // Function to fetch the route
-    const fetchRoute = async () => {
+    const fetchRoute = useCallback(async () => {
         if (!coordinates[0] || !coordinates[1]) {
-            setRouteError('Start and End coordinates are required.')
-            return
+            setRouteError('Start and End coordinates are required.');
+            return;
         }
 
-        const start = coordinates[0]
-        const end = coordinates[1]
+        const start = coordinates[0];
+        const end = coordinates[1];
 
         if (!start || !end) {
-            setRouteError('Invalid coordinates.')
-            return
+            setRouteError('Invalid coordinates.');
+            return;
         }
 
-        setRouteLoading(true)
-        setRouteError(null)
-        setRoute(null) // Clear previous route
+        setRouteLoading(true);
+        setRouteError(null);
+        setRoute(null); // Clear previous route
 
         try {
             const routeData = await getRoute(
@@ -134,47 +138,58 @@ export default function HomePage() {
                 start.lat,
                 end.lon,
                 end.lat
-            )
+            );
 
             // Debugging: Log the received routeData
-            console.log('Received Route Data:', routeData)
+            console.log('Received Route Data:', routeData);
 
             if (routeData.code !== 'Ok' || routeData.routes.length === 0) {
-                throw new Error('No route found.')
+                throw new Error('No route found.');
             }
 
             // Assuming routeData.routes[0].geometry is a GeoJSON LineString
             const routeGeometry: LineString = routeData.routes[0]
-                .geometry as LineString
-            setRoute(routeGeometry)
+                .geometry as LineString;
+            setRoute(routeGeometry);
         } catch (error: unknown) {
-            console.error(error)
+            console.error(error);
             if (error instanceof Error) {
-                setRouteError(error.message || 'Failed to fetch route.')
+                setRouteError(error.message || 'Failed to fetch route.');
             } else {
-                setRouteError('An unknown error occurred.')
+                setRouteError('An unknown error occurred.');
             }
         } finally {
-            setRouteLoading(false)
+            setRouteLoading(false);
         }
-    }
+    }, [coordinates]);
+
+    // useEffect to automatically fetch route when both coordinates are fetched and inputs are unfocused
+    useEffect(() => {
+        const areCoordinatesFetched = coordinates[0] && coordinates[1];
+        const areInputsUnfocused = !isStartFocused && !isEndFocused;
+
+        if (areCoordinatesFetched && areInputsUnfocused) {
+            fetchRoute();
+        }
+    }, [coordinates, isStartFocused, isEndFocused, fetchRoute]);
 
     // Determine start coordinates for centering the map
     const startCoordinates = coordinates[0] || {
         lat: 54.731549,
         lon: 25.261934,
-    } // Default to sample start
+    }; // Default to sample start
 
+    // Function to determine button content (optional if keeping the button)
     const getButton = () => {
-        console.log(routeLoading, coordinates)
+        console.log(routeLoading, coordinates);
         if (routeLoading) {
-            return <span>Fetching Route...</span>
+            return <span>Fetching Route...</span>;
         } else if (!coordinates[0] || !coordinates[1]) {
-            return <span>Fetch route</span>
+            return <span>Fetch route</span>;
         } else if (route) {
-            return <Link href="/router/preview">Preview route</Link>
+            return <Link href="/router/preview">Preview route</Link>;
         }
-    }
+    };
 
     return (
         <div className="flex flex-col h-full bg-background relative">
@@ -198,12 +213,20 @@ export default function HomePage() {
                                                     e.target.value
                                                 )
                                             }
+                                            onFocus={() => {
+                                                if (index === 0)
+                                                    setIsStartFocused(true);
+                                                else setIsEndFocused(true);
+                                            }}
                                             onBlur={() => {
+                                                if (index === 0)
+                                                    setIsStartFocused(false);
+                                                else setIsEndFocused(false);
                                                 if (stop.trim() !== '') {
                                                     fetchCoordinates(
                                                         stop,
                                                         index
-                                                    )
+                                                    );
                                                 }
                                             }}
                                         />
@@ -238,23 +261,25 @@ export default function HomePage() {
                     )}
                 </div>
             </div>
-            {/* "Go" Button */}
-            <div className="px-4 pb-4 pt-1">
-                <Button
-                    className="w-full"
-                    size="lg"
-                    disabled={
-                        !stops[0].trim() ||
-                        !stops[1].trim() ||
-                        loadingStates.some((loading) => loading) ||
-                        errors.some((error) => error !== null) ||
-                        routeLoading
-                    }
-                    onClick={!!coordinates ? fetchRoute : () => null}
-                >
-                    {getButton()}
-                </Button>
-            </div>
+
+            {/* Optional: Remove or Retain the "Go" Button */}
+            {/* If you choose to retain it, adjust its disabled state and content accordingly */}
+	     <div className="px-4 pb-4 pt-1">
+		<Button
+		    className="w-full"
+		    size="lg"
+		    disabled={
+			!stops[0].trim() ||
+			!stops[1].trim() ||
+			loadingStates.some((loading) => loading) ||
+			errors.some((error) => error !== null) ||
+			routeLoading
+		    }
+		>
+		<Link href="/router/preview">Preview route</Link>
+		</Button>
+	    </div> 
         </div>
-    )
+    );
 }
+
